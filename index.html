@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FINORA — Personal Finance Dashboard</title>
+<meta name="description" content="FINORA: a premium personal finance dashboard (demo data).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Caveat:wght@600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="script.js" defer></script>
+</head>
+<body>
+<div class="scrim" id="scrim"></div>
+
+<aside class="sidebar" id="sidebar" aria-label="Sidebar">
+  <a class="logo" href="#overview"><span class="logo-mark">F</span>Finora</a>
+  <nav id="nav" aria-label="Main navigation">
+    <a href="#overview" class="active"><i data-i="home"></i>Overview</a>
+    <a href="#transactions"><i data-i="list"></i>Transactions</a>
+    <a href="#analytics"><i data-i="chart"></i>Analytics</a>
+    <a href="#budgets"><i data-i="wallet"></i>Budgets</a>
+    <a href="#goals"><i data-i="target"></i>Savings Goals</a>
+    <a href="#settings"><i data-i="gear"></i>Settings</a>
+  </nav>
+  <div class="user"><span class="avatar">S</span><div><b>Sarjina</b><small>Premium plan</small></div></div>
+</aside>
+
+<div class="main">
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu"><i data-i="menu"></i></button>
+    <div class="today"><b id="dNum"></b><span id="dTxt"></span></div>
+    <button class="btn" data-act="addtx"><i data-i="plus"></i>Add transaction</button>
+    <div class="greet"><h1 id="hi">Good evening, Sarjina</h1><p>Here is where your money stands this month.</p></div>
+    <div class="tools">
+      <label class="search"><i data-i="search"></i><input id="search" type="search" placeholder="Search transactions…" aria-label="Search transactions"></label>
+      <select id="range" class="select" aria-label="Date range">
+        <option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option><option value="0">All time</option>
+      </select>
+      <div class="dd">
+        <button class="icon-btn" data-dd aria-label="Notifications" aria-expanded="false"><i data-i="bell"></i><span class="dot" id="dot"></span></button>
+        <div class="menu"><div class="menu-h"><b>Notifications</b><button class="link" id="readAll">Mark all read</button></div><ul id="notifList"></ul></div>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme"></button>
+      <div class="dd">
+        <button class="avatar-btn" data-dd aria-label="Profile menu" aria-expanded="false"><span class="avatar">S</span></button>
+        <div class="menu"><div class="menu-h"><div><b>Sarjina</b><small>sarjina@finora.demo</small></div></div>
+          <a href="#settings" class="mi"><i data-i="gear"></i>Settings</a>
+          <button class="mi" data-act="theme"><i data-i="moon"></i>Toggle theme</button>
+          <button class="mi" data-act="signout"><i data-i="out"></i>Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview" aria-label="Overview"><div class="cards" id="cards"></div>
+      <article class="card tile ring-t"><h3>Kept this month</h3><div id="ring"></div></article>
+      <article class="card tile circ-t"><h3>Where it went</h3><div id="circles"></div></article>
+      <article class="card tile todo-t"><h3>Needs a look</h3><ul class="todo" id="todo"></ul></article></section>
+
+    <section id="analytics" class="sec">
+      <div class="sec-h"><div><h2>Analytics</h2><p>Six-month cash flow and where your money goes.</p></div></div>
+      <div class="grid-main">
+        <article class="card reveal">
+          <div class="row"><h3>Income vs Expenses</h3>
+            <div class="legend-inline"><span><i class="dot-c" style="background:var(--inc)"></i>Income</span><span><i class="dot-c" style="background:var(--exp)"></i>Expenses</span></div></div>
+          <div class="chart-box"><canvas id="lineChart" role="img" aria-label="Income versus expenses line chart"></canvas></div>
+        </article>
+        <article class="card reveal">
+          <h3>Expense Breakdown</h3>
+          <div class="chart-box donut-box"><canvas id="donut" role="img" aria-label="Expense breakdown doughnut chart"></canvas>
+            <div class="donut-c"><small>Total spent</small><b id="donutTotal"></b></div></div>
+          <ul class="legend" id="legend"></ul>
+        </article>
+      </div>
+      <div class="insights stagger" id="insights"></div>
+    </section>
+
+    <section id="transactions" class="sec">
+      <div class="sec-h"><div><h2>Transactions</h2><p>Search, filter and sort your activity.</p></div>
+        <button class="btn" data-act="addtx"><i data-i="plus"></i>Add transaction</button></div>
+      <div class="grid-tx">
+        <article class="card reveal">
+          <div class="toolbar"><select id="type" class="select" aria-label="Filter by type"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expenses</option></select>
+            <small class="muted" id="count"></small></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th aria-sort="none"><button data-sort="name">Transaction</button></th>
+                <th>Category</th>
+                <th aria-sort="descending"><button data-sort="date">Date</button></th>
+                <th class="r" aria-sort="none"><button data-sort="amt">Amount</button></th>
+                <th>Status</th></tr></thead>
+              <tbody id="txBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="empty" hidden><i data-i="search"></i><b>No transactions found</b><p>Try a different search, type or date range.</p>
+            <button class="btn ghost sm" id="clearF">Clear filters</button></div>
+        </article>
+        <article class="card reveal"><h3>Recent Activity</h3><ul class="activity" id="activity"></ul></article>
+      </div>
+    </section>
+
+    <section id="budgets" class="sec">
+      <div class="sec-h"><div><h2>Monthly Budgets</h2><p>Spending against your limits this month.</p></div></div>
+      <div class="grid-auto stagger" id="budgetList"></div>
+    </section>
+
+    <section id="goals" class="sec">
+      <div class="sec-h"><div><h2>Savings Goals</h2><p>Track progress toward what matters.</p></div>
+        <button class="btn" data-act="addgoal"><i data-i="plus"></i>New goal</button></div>
+      <div class="grid-auto stagger" id="goalList"></div>
+    </section>
+
+    <section id="settings" class="sec">
+      <div class="sec-h"><div><h2>Settings</h2><p>Personalise your demo workspace.</p></div></div>
+      <div class="card reveal set">
+        <div class="srow"><div><b>Appearance</b><small>Switch between dark and light themes.</small></div><button class="btn ghost" data-act="theme">Toggle theme</button></div>
+        <div class="srow"><div><b>Demo data</b><small>Restore the original sample transactions and goals.</small></div><button class="btn ghost" data-act="reset">Reset data</button></div>
+      </div>
+      <p class="foot">All amounts are fictional demo data. No bank connections.</p>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="txModal" role="dialog" aria-modal="true" aria-labelledby="txT" aria-hidden="true">
+  <form class="sheet" id="txForm">
+    <div class="row"><h3 id="txT">Add transaction</h3><button type="button" class="icon-btn" data-close aria-label="Close"><i data-i="x"></i></button></div>
+    <label>Description<input name="name" required maxlength="40" placeholder="e.g. Grocery run"></label>
+    <div class="two">
+      <label>Amount (₹)<input name="amt" type="number" min="1" max="10000000" required placeholder="1500"></label>
+      <label>Type<select name="type"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+    </div>
+    <div class="two">
+      <label>Category (expenses)<select name="cat"></select></label>
+      <label>Date<input name="date" type="date" required></label>
+    </div>
+    <div class="actions"><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">Save transaction</button></div>
+  </form>
+</div>
+
+<div class="modal" id="goalModal" role="dialog" aria-modal="true" aria-labelledby="gT" aria-hidden="true">
+  <form class="sheet" id="goalForm">
+    <div class="row"><h3 id="gT">New savings goal</h3><button type="button" class="icon-btn" data-close aria-label="Close"><i data-i="x"></i></button></div>
+    <label>Goal name<input name="name" required maxlength="30" placeholder="e.g. New bike"></label>
+    <div class="two">
+      <label>Target (₹)<input name="target" type="number" min="1" required placeholder="80000"></label>
+      <label>Already saved (₹)<input name="saved" type="number" min="0" value="0" required></label>
+    </div>
+    <div class="actions"><button type="button" class="btn ghost" data-close>Cancel</button><button class="btn">Create goal</button></div>
+  </form>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+</body>
+</html>
